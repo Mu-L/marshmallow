@@ -153,11 +153,6 @@ class Field(FieldABC):
         Replace ``missing`` and ``default`` parameters with ``load_default`` and ``dump_default``.
     """
 
-    # Some fields, such as Method fields and Function fields, are not expected
-    #  to exist as attributes on the objects to serialize. Set this to False
-    #  for those fields
-    _CHECK_ATTRIBUTE = True
-
     #: Default error messages for various kinds of errors. The keys in this dictionary
     #: are passed to `Field.make_error`. The values are error messages passed to
     #: :exc:`marshmallow.exceptions.ValidationError`.
@@ -300,15 +295,12 @@ class Field(FieldABC):
         :param accessor: Function used to access values from ``obj``.
         :param kwargs: Field-specific keyword arguments.
         """
-        if self._CHECK_ATTRIBUTE:
-            value = self.get_value(obj, attr, accessor=accessor)
-            if value is missing_:
-                default = self.dump_default
-                value = default() if callable(default) else default
-            if value is missing_:
-                return value
-        else:
-            value = None
+        value = self.get_value(obj, attr, accessor=accessor)
+        if value is missing_:
+            default = self.dump_default
+            value = default() if callable(default) else default
+        if value is missing_:
+            return value
         return self._serialize(value, attr, obj, **kwargs)
 
     def deserialize(
@@ -1870,8 +1862,6 @@ class Method(Field):
         Removed ``method_name`` parameter.
     """
 
-    _CHECK_ATTRIBUTE = False
-
     def __init__(
         self,
         serialize: str | None = None,
@@ -1900,7 +1890,7 @@ class Method(Field):
 
         super()._bind_to_schema(field_name, parent)
 
-    def _serialize(self, value, attr, obj, **kwargs):
+    def get_value(self, obj, attr, accessor=None, default=missing_):
         if self._serialize_method is not None:
             return self._serialize_method(obj)
         return missing_
@@ -1934,8 +1924,6 @@ class Function(Field):
         Removed ``func`` parameter.
     """
 
-    _CHECK_ATTRIBUTE = False
-
     def __init__(
         self,
         serialize: (
@@ -1957,7 +1945,7 @@ class Function(Field):
         self.serialize_func = serialize and utils.callable_or_raise(serialize)
         self.deserialize_func = deserialize and utils.callable_or_raise(deserialize)
 
-    def _serialize(self, value, attr, obj, **kwargs):
+    def get_value(self, obj, attr, accessor=None, default=missing_):
         return self._call_or_raise(self.serialize_func, obj, attr)
 
     def _deserialize(self, value, attr, data, **kwargs):
@@ -1982,15 +1970,13 @@ class Constant(Field):
     :param constant: The constant to return for the field attribute.
     """
 
-    _CHECK_ATTRIBUTE = False
-
     def __init__(self, constant: typing.Any, **kwargs: Unpack[_BaseFieldKwargs]):
         super().__init__(**kwargs)
         self.constant = constant
         self.load_default = constant
         self.dump_default = constant
 
-    def _serialize(self, value, *args, **kwargs):
+    def get_value(self, obj, attr, accessor=None, default=missing_):
         return self.constant
 
     def _deserialize(self, value, *args, **kwargs):

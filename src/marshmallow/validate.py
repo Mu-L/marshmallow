@@ -71,7 +71,7 @@ class And(Validator):
         kwargs = {}
         for validator in self.validators:
             try:
-                validator(value)
+                value = validator(value)
             except ValidationError as err:
                 kwargs.update(err.kwargs)
                 if isinstance(err.messages, dict):

@@ -264,14 +264,14 @@ class Field(typing.Generic[_InternalT]):
         check_key = attr if self.attribute is None else self.attribute
         return accessor_func(obj, check_key, default)
 
-    def _validate(self, value: typing.Any) -> None:
+    def _validate(self, value: _InternalT) -> _InternalT:
         """Perform validation on ``value``. Raise a :exc:`ValidationError` if validation
         does not succeed.
         """
-        self._validate_all(value)
+        return self._validate_all(value)
 
     @property
-    def _validate_all(self) -> typing.Callable[[typing.Any], None]:
+    def _validate_all(self) -> typing.Callable[[_InternalT], _InternalT]:
         return And(*self.validators)
 
     def make_error(self, key: str, **kwargs) -> ValidationError:
@@ -373,7 +373,7 @@ class Field(typing.Generic[_InternalT]):
         if self.allow_none and value is None:
             return None
         output = self._deserialize(value, attr, data, **kwargs)
-        self._validate(output)
+        output = self._validate(output)
         return output
 
     # Methods for concrete classes to override.

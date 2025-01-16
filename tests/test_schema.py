@@ -1751,6 +1751,46 @@ class TestFieldValidation:
         errors = s.validate({"b": "data"})
         assert errors == {"b": {"code": "invalid_b"}}
 
+    def test_field_validator_can_transform_deserialized_value(self):
+        def strip_whitespace(value: str) -> str:
+            return value.strip()
+
+        def uppercase(value: str) -> str:
+            return value.upper()
+
+        class ArtistSchema(Schema):
+            name = fields.Str(data_key="Name", validate=(strip_whitespace, uppercase))
+
+        s = ArtistSchema()
+        assert s.load({"Name": "  foo  "}) == {"name": "FOO"}
+
+        s_many = ArtistSchema(many=True)
+        assert s_many.load([{"Name": "  foo  "}, {"Name": "  bar  "}]) == [
+            {"name": "FOO"},
+            {"name": "BAR"},
+        ]
+
+    def test_validator_method_can_transform_deserialized_value(self):
+        class ArtistSchema(Schema):
+            name = fields.Str(data_key="Name")
+
+            @validates("name")
+            def strip_whitespace(self, value: str) -> str:
+                return value.strip()
+
+            @validates("name")
+            def uppercase(self, value: str) -> str:
+                return value.upper()
+
+        s = ArtistSchema()
+        assert s.load({"Name": "  foo  "}) == {"name": "FOO"}
+
+        s_many = ArtistSchema(many=True)
+        assert s_many.load([{"Name": "  foo  "}, {"Name": "  bar  "}]) == [
+            {"name": "FOO"},
+            {"name": "BAR"},
+        ]
+
 
 def test_schema_repr():
     class MySchema(Schema):

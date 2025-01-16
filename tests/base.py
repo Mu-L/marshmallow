@@ -78,13 +78,16 @@ def assert_time_equal(t1: dt.time, t2: dt.time) -> None:
 
 ##### Validation #####
 
+T = typing.TypeVar("T")
+
 
 def predicate(
     func: typing.Callable[[typing.Any], bool],
-) -> typing.Callable[[typing.Any], None]:
-    def validate(value: typing.Any) -> None:
+) -> typing.Callable[[T], T]:
+    def validate(value: T) -> T:
         if func(value) is False:
             raise ValidationError("Invalid value.")
+        return value
 
     return validate
 

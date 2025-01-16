@@ -1125,6 +1125,10 @@ class Schema(metaclass=SchemaMeta):
                         )
                         if validated_value is missing:
                             data[idx].pop(field_name, None)
+                        else:
+                            data[idx][field_obj.attribute or field_name] = (
+                                validated_value
+                            )
             else:
                 try:
                     value = data[field_obj.attribute or field_name]
@@ -1139,6 +1143,8 @@ class Schema(metaclass=SchemaMeta):
                     )
                     if validated_value is missing:
                         data.pop(field_name, None)
+                    else:
+                        data[field_obj.attribute or field_name] = validated_value
 
     def _invoke_schema_validators(
         self,

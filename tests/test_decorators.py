@@ -248,9 +248,10 @@ class ValidatesSchema(Schema):
     foo = fields.Int()
 
     @validates("foo")
-    def validate_foo(self, value):
+    def validate_foo(self, value: int) -> int:
         if value != 42:
             raise ValidationError("The answer to life the universe and everything.")
+        return value
 
 
 class TestValidatesDecorator:

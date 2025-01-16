@@ -961,9 +961,10 @@ def test_containsnoneof_mixing_types():
         validate.ContainsNoneOf([1, 2, 3])((1,))
 
 
-def is_even(value):
+def is_even(value: int) -> int:
     if value % 2 != 0:
         raise ValidationError("Not an even value.")
+    return value
 
 
 def test_and():

@@ -9,11 +9,17 @@ from __future__ import annotations
 
 import typing
 
+T = typing.TypeVar("T")
+
 #: A type that can be either a sequence of strings or a set of strings
 StrSequenceOrSet = typing.Union[typing.Sequence[str], typing.AbstractSet[str]]
 
 #: Type for validator functions
 Validator = typing.Callable[[typing.Any], typing.Any]
+#: Type for field-level pre-load functions
+PreLoadCallable = typing.Callable[[typing.Any], typing.Any]
+#: Type for field-level post-load functions
+PostLoadCallable = typing.Callable[[T], T]
 
 
 class SchemaValidator(typing.Protocol):

@@ -158,12 +158,12 @@ class Field(FieldABC):
         data_key: str | None = None,
         attribute: str | None = None,
         validate: types.Validator | typing.Iterable[types.Validator] | None = None,
-        pre_load: types.PreLoadCallable
-        | typing.Iterable[types.PreLoadCallable]
-        | None = None,
-        post_load: types.PostLoadCallable
-        | typing.Iterable[types.PostLoadCallable]
-        | None = None,
+        pre_load: (
+            types.PreLoadCallable | typing.Iterable[types.PreLoadCallable] | None
+        ) = None,
+        post_load: (
+            types.PostLoadCallable | typing.Iterable[types.PostLoadCallable] | None
+        ) = None,
         required: bool = False,
         allow_none: bool | None = None,
         load_only: bool = False,

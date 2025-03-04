@@ -176,4 +176,5 @@ Contributors (chronological)
 - Peter C `@somethingnew2-0 <https://github.com/somethingnew2-0>`_
 - Marcel Jackwerth `@mrcljx` <https://github.com/mrcljx>`_
 - Fares Abubaker `@Fares-Abubaker <https://github.com/Fares-Abubaker>`_
+- Dharanikumar Sekar `@dharani7998 <https://github.com/dharani7998>`_
 - Nicolas Simonds `@0xDEC0DE <https://github.com/0xDEC0DE>`_

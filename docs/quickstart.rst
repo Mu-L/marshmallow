@@ -290,7 +290,7 @@ You may also pass a collection (list, tuple, generator) of callables to ``valida
 Field validators as methods
 +++++++++++++++++++++++++++
 
-It is sometimes convenient to write validators as methods. Use the `validates <marshmallow.decorators.validates>` decorator to register field validator methods.
+It is sometimes convenient to write validators as methods. Use the `validates <marshmallow.validates>` decorator to register field validator methods.
 
 .. code-block:: python
 
@@ -301,11 +301,29 @@ It is sometimes convenient to write validators as methods. Use the `validates <m
         quantity = fields.Integer()
 
         @validates("quantity")
-        def validate_quantity(self, value):
+        def validate_quantity(self, value: int, data_key: str) -> None:
             if value < 0:
                 raise ValidationError("Quantity must be greater than 0.")
             if value > 30:
                 raise ValidationError("Quantity must not be greater than 30.")
+
+.. note::
+
+    You can pass multiple field names to the `validates <marshmallow.validates>` decorator.
+
+    .. code-block:: python
+
+        from marshmallow import Schema, fields, validates, ValidationError
+
+
+        class UserSchema(Schema):
+            name = fields.Str(required=True)
+            nickname = fields.Str(required=True)
+
+            @validates("name", "nickname")
+            def validate_names(self, value: str, data_key: str) -> None:
+                if len(value) < 3:
+                    raise ValidationError("Too short")
 
 
 Required fields

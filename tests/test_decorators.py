@@ -251,7 +251,7 @@ class ValidatesSchema(Schema):
     foo = fields.Int()
 
     @validates("foo")
-    def validate_foo(self, value):
+    def validate_foo(self, value, **kwargs):
         if value != 42:
             raise ValidationError("The answer to life the universe and everything.")
 
@@ -262,7 +262,7 @@ class TestValidatesDecorator:
             s = fields.String()
 
             @validates("s")
-            def validate_string(self, data):
+            def validate_string(self, data, **kwargs):
                 raise ValidationError("nope")
 
         with pytest.raises(ValidationError) as excinfo:
@@ -276,7 +276,7 @@ class TestValidatesDecorator:
             s = fields.String(attribute="string_name")
 
             @validates("s")
-            def validate_string(self, data):
+            def validate_string(self, data, **kwargs):
                 raise ValidationError("nope")
 
         with pytest.raises(ValidationError) as excinfo:
@@ -330,7 +330,7 @@ class TestValidatesDecorator:
     def test_field_not_present(self):
         class BadSchema(ValidatesSchema):
             @validates("bar")
-            def validate_bar(self, value):
+            def validate_bar(self, value, **kwargs):
                 raise ValidationError("Never raised.")
 
         schema = BadSchema()
@@ -344,7 +344,7 @@ class TestValidatesDecorator:
             bar = fields.Int(validate=validate.Equal(1))
 
             @validates("bar")
-            def validate_bar(self, value):
+            def validate_bar(self, value, **kwargs):
                 if value != 2:
                     raise ValidationError("Must be 2")
 
@@ -371,7 +371,7 @@ class TestValidatesDecorator:
             foo = fields.String(data_key="foo-name")
 
             @validates("foo")
-            def validate_string(self, data):
+            def validate_string(self, data, **kwargs):
                 raise ValidationError("nope")
 
         schema = BadSchema()
@@ -384,6 +384,23 @@ class TestValidatesDecorator:
             [{"foo-name": "data"}, {"foo-name": "data2"}], many=True
         )
         assert errors == {0: {"foo-name": ["nope"]}, 1: {"foo-name": ["nope"]}}
+
+    def test_validates_accepts_multiple_fields(self):
+        class BadSchema(Schema):
+            foo = fields.String()
+            bar = fields.String(data_key="Bar")
+
+            @validates("foo", "bar")
+            def validate_string(self, data: str, data_key: str):
+                raise ValidationError(f"'{data}' is invalid for {data_key}.")
+
+        schema = BadSchema()
+        with pytest.raises(ValidationError) as excinfo:
+            schema.load({"foo": "data", "Bar": "data2"})
+        assert excinfo.value.messages == {
+            "foo": ["'data' is invalid for foo."],
+            "Bar": ["'data2' is invalid for Bar."],
+        }
 
 
 class TestValidatesSchemaDecorator:

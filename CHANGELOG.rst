@@ -1,6 +1,14 @@
 Changelog
 ---------
 
+4.1.1 (2025-11-05)
+++++++++++++++++++
+
+Bug fixes:
+
+- Ensure ``URL`` validator is case-insensitive when using custom schemes (:pr:`2874`).
+  Thanks :user:`T90REAL` for the PR.
+
 4.1.0 (2025-11-01)
 ++++++++++++++++++
 
@@ -10,8 +18,7 @@ Other changes:
   `validate.Length <marshmallow.validate.Length>` (:pr:`2861`).
   Thanks :user:`agentgodzilla` for the PR.
 - Drop support for Python 3.9 (:pr:`2363`).
-- Test against Python 3.14.
-
+- Test against Python 3.14 (:pr:`2864`).
 
 4.0.1 (2025-08-28)
 ++++++++++++++++++

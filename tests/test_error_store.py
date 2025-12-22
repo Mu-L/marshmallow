@@ -1,7 +1,7 @@
 from typing import NamedTuple
 
 from marshmallow import missing
-from marshmallow.error_store import merge_errors, ErrorStore
+from marshmallow.error_store import ErrorStore, merge_errors
 
 
 def test_missing_is_falsy():

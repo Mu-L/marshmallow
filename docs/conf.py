@@ -41,7 +41,6 @@ html_theme_options = {
     "source_directory": "docs/",
     "sidebar_hide_name": True,
     "light_css_variables": {
-        # Serif system font stack: https://systemfontstack.com/
         "font-stack": "Charter, Iowan Old Style, Palatino Linotype, Palatino, Georgia, serif;",
     },
     "top_of_page_buttons": ["view", "edit"],

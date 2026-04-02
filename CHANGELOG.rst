@@ -7,7 +7,7 @@ Changelog
 Bug fixes:
 
 - `marshmallow.validate.URL` and `marshmallow.validate.Email` accept Internationalized Domain Names (IDNs) (:issue:`2821`, :issue:`2936`).
- `marshmallow.validate.Email` also correctly rejects IDN domains with leading/trailing hyphens.
+  `marshmallow.validate.Email` also correctly rejects IDN domains with leading/trailing hyphens.
   Thanks :user:`touhidurrr` for the report.
 - Typing: Fix typing of ``nested`` in `marshmallow.fields.Nested` (:pr:`2935`).
 
@@ -122,10 +122,12 @@ Other changes:
   The typing of `data` is also updated to be more accurate.
   Thanks :user:`ziplokk1` for reporting.
 - *Backwards-incompatible*: Use `datetime.date.fromisoformat`, `datetime.time.fromisoformat`, and `datetime.datetime.fromisoformat` from the standard library to deserialize dates, times and datetimes (:pr:`2078`).
-As a consequence of this change:
+  As a consequence of this change:
+
   - Time with time offsets are now supported.
   - YYYY-MM-DD is now accepted as a datetime and deserialized as naive 00:00 AM.
   - `from_iso_date`, `from_iso_time` and `from_iso_datetime` are removed from `marshmallow.utils`.
+
 - Remove `isoformat`, `to_iso_time` and `to_iso_datetime` from `marshmallow.utils` (:pr:`2766`).
 - Remove `from_rfc`, and `rfcformat` from `marshmallow.utils` (:pr:`2767`).
 - Remove `is_keyed_tuple` from `marshmallow.utils` (:pr:`2768`).
